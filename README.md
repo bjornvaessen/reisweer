@@ -5,8 +5,7 @@ schakelen tussen aparte plekken in je weer-apps.
 
 ## Waarom
 
-Bij een rondreis met meerdere stops kost het uitzoeken van het weer per plaats al snel meer
-tijd dan de reis zelf plannen. Reisweer zet je route neer als een tijdlijn: elke stop met
+Bij een rondreis met meerdere stops kost het uitzoeken van het weer per plaats behoorlijk wat tijd. Reisweer zet je route neer als een tijdlijn: elke stop met
 bijbehorende data, en het weer voor precies die dagen waarop je er bent.
 
 ## Functies
