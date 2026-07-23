@@ -207,12 +207,12 @@
   .weather-row{ display:flex; gap:8px; flex-wrap:wrap; }
   .day-chip{
     width:80px; flex-shrink:0; border:1px solid var(--line); border-radius:8px; padding:8px 4px; text-align:center;
-    background:var(--paper); font-family:inherit; color:inherit;
+    background:var(--paper); font-family:inherit; color:inherit; margin:0; appearance:none; -webkit-appearance:none;
   }
   .day-chip.is-today{ border-color:var(--amber); background:var(--amber-soft); }
   .day-chip.is-approx{ border-style:dashed; }
   .day-chip .day-label{ font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; color:var(--ink-soft); }
-  .day-icon{ width:34px; height:34px; margin:4px auto; display:block; }
+  .day-icon, .day-icon-spacer{ width:34px; height:34px; margin:4px auto; display:block; }
   .temps{ font-family:'IBM Plex Mono',monospace; font-size:13px; }
   .t-max{ font-weight:600; color:var(--ink); }
   .t-min{ color:var(--ink-soft); }
@@ -225,7 +225,7 @@
   .uv-badge.uv-extreme{ background:#E4D9F0; color:var(--violet); }
   .desc{ font-size:9.5px; color:var(--ink-soft); margin-top:3px; min-height:11px; }
   .day-chip.placeholder{ opacity:0.75; }
-  .day-chip.placeholder .desc{ margin-top:14px; font-size:10.5px; }
+  .day-chip.placeholder .desc{ font-size:10.5px; }
   .weather-status{ font-size:12.5px; color:var(--ink-soft); padding:4px 2px; }
 
   button.day-chip{ cursor:pointer; }
@@ -239,7 +239,7 @@
       width:100%; display:flex; align-items:center; text-align:left; gap:10px; padding:8px 12px;
     }
     .day-chip .day-label{ width:58px; flex-shrink:0; order:1; }
-    .day-chip .day-icon{ margin:0; flex-shrink:0; order:2; }
+    .day-chip .day-icon, .day-chip .day-icon-spacer{ margin:0; flex-shrink:0; order:2; }
     .day-chip .desc{
       order:3; display:block; margin-top:0; min-height:0;
       font-size:10.5px; line-height:1.25; max-width:74px; white-space:normal;
@@ -1008,6 +1008,7 @@ function renderWeatherBlock(stopId){
     const msg = d.kind==='future' ? 'Nog te ver vooruit' : d.kind==='past' ? 'Verstreken' : 'Onbekend';
     return '<div class="day-chip placeholder'+(isToday?' is-today':'')+'">'
       +'<div class="day-label">'+formatDayLabel(d.date)+'</div>'
+      +'<div class="day-icon-spacer" aria-hidden="true"></div>'
       +'<div class="desc">'+msg+'</div></div>';
   }).join('');
   const legend = hasApprox ? '<p class="modal-hint" style="margin:6px 0 0;">~ = langjarig gemiddelde (statistisch), geen harde voorspelling.</p>' : '';
