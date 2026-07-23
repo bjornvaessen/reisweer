@@ -14,6 +14,11 @@ bijbehorende data, en het weer voor precies die dagen waarop je er bent.
 - **Automatische startdatum**: een nieuwe stop begint waar de vorige eindigt
 - **Weer per stop**, met een duidelijk onderscheid tussen een harde voorspelling en een
   langjarig gemiddelde (gemarkeerd met `~`) voor dagen ver vooruit
+- **Dagdetails met één klik**: UV-index, neerslag in mm, gevoelstemperatuur, wind, zonsopkomst
+  en -ondergang, en — bij Visual Crossing — ook luchtvochtigheid, luchtdruk, zicht, bewolking
+  en maanfase. Inclusief een uurgrafiek van temperatuur en neerslagkans, met een eigen as voor
+  elk van de twee.
+- **Blader door de hele reis**: klik door alle dagen van de reis vanuit het dagdetail
 - **Twee weerdiensten om uit te kiezen** (via Instellingen):
   - [Open-Meteo](https://open-meteo.com): gratis, geen sleutel nodig, tot ~16 dagen vooruit
   - [Visual Crossing](https://www.visualcrossing.com): eigen gratis sleutel nodig, kijkt
@@ -23,6 +28,7 @@ bijbehorende data, en het weer voor precies die dagen waarop je er bent.
   (potlood-icoon) om een reisplan aan te passen
 - **Bewaren & laden**: reisplannen als bestand downloaden of als tekst kopiëren, zodat je ze
   kunt meenemen naar een andere browser of computer
+- **Prettig op telefoon én desktop**: op mobiel staan de dagen onder elkaar als brede balken, op een groter scherm naast elkaar als tegels
 
 ## Gebruiken
 
@@ -36,7 +42,8 @@ het weer is een actieve internetverbinding nodig.
 
 ## Techniek
 
-- Puur HTML, CSS en JavaScript; geen frameworks, geen dependencies om te installeren
+- Gegenereerd met Claude
+- Uitsluitend HTML, CSS en JavaScript. Geen frameworks, geen dependencies om te installeren
 - Lettertypen (IBM Plex) worden geladen via Google Fonts
 - Weerdata via [Open-Meteo](https://open-meteo.com) en optioneel
   [Visual Crossing](https://www.visualcrossing.com)
