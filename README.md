@@ -24,6 +24,7 @@ bijbehorende data, en het weer voor precies die dagen waarop je er bent.
   - [Visual Crossing](https://www.visualcrossing.com): eigen gratis sleutel nodig, kijkt
     verder vooruit via statistische gemiddelden. De sleutel wordt alleen lokaal in je browser
     bewaard.
+- **Luchtkwaliteit en brandhaarden** (via Instellingen): luchtkwaliteit (Open-Meteo, 7 dagen vooruit) en brandhaarden binnen een straal van 60 kilometer van de stop (NASA FIRMS, gratis sleutel nodig)
 - **Bekijk- en bewerkmodus**: een opgeruimd overzicht om te bekijken, een aparte bewerkmodus
   (potlood-icoon) om een reisplan aan te passen
 - **Bewaren & laden**: reisplannen als bestand downloaden of als tekst kopiëren, zodat je ze
@@ -47,6 +48,8 @@ het weer is een actieve internetverbinding nodig.
 - Lettertypen (IBM Plex) worden geladen via Google Fonts
 - Weerdata via [Open-Meteo](https://open-meteo.com) en optioneel
   [Visual Crossing](https://www.visualcrossing.com)
+- Luchtkwaliteit via [Open-Meteo](https://open-meteo.com)
+- Brandhaarden via [NASA FIRMS](https://firms.modaps.eosdis.nasa.gov/)
 
 ## Licentie
 
