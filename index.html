@@ -827,9 +827,6 @@ function renderSidebar(){
       +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>'
       +'Nieuw reisplan</button>'
     +'<div class="sidebar-foot">'+dataNote
-      +'<button type="button" class="backup-btn" onclick="App.openBackupPanel()">'
-        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-        +'Bewaren &amp; laden</button>'
       +(footer?'<div style="margin-top:10px;">'+footer+'</div>':'')
     +'</div>'
   +'</div>';
@@ -975,6 +972,14 @@ function renderSettingsModal(){
       +'<label class="provider-option"><input type="radio" name="provider" '+(s.provider==='visualcrossing'?'checked':'')+' onchange="App.setProvider(\'visualcrossing\')" />'
         +'<span><strong>Visual Crossing</strong> <span class="modal-hint" style="margin:2px 0 0;display:block;">Eigen gratis sleutel nodig. Kijkt verder vooruit, maar dagen na ~15 dagen zijn een langjarig gemiddelde (zie ~), geen harde voorspelling.</span></span></label>'
       +vcSection
+      +'<h4 style="margin-top:18px;">Gegevens</h4>'
+      +'<button type="button" class="backup-btn" onclick="App.openBackupPanel()">'
+        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        +'Bewaren &amp; laden</button>'
+      +'<p class="modal-hint">Reisplannen als bestand downloaden of als tekst kopiëren, en later weer inladen.</p>'
+      +'<h4 style="margin-top:18px;">Over deze app</h4>'
+      +'<p class="modal-hint" style="margin-top:0;">Broncode op <a href="https://github.com/bjornvaessen/reisweer" target="_blank" rel="noopener" style="color:var(--teal);">github.com/bjornvaessen/reisweer</a>.<br>'
+        +'Open source onder de <a href="https://github.com/bjornvaessen/reisweer/blob/main/LICENSE" target="_blank" rel="noopener" style="color:var(--teal);">GNU GPLv3-licentie</a>.</p>'
     +'</div>'
   +'</div>';
 }
