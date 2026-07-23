@@ -137,6 +137,33 @@
   .legend-temp{ background:var(--amber); }
   .legend-precip{ background:var(--teal-soft); border:1px solid var(--teal); }
 
+  .risk-row{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; margin-bottom:12px; background:var(--danger-soft); border:1px solid var(--danger); }
+  .badge-circle{ width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--danger); }
+  .badge-circle svg{ width:15px; height:15px; }
+  .risk-text{ font-size:12.5px; line-height:1.4; }
+  .risk-text strong{ color:var(--danger); }
+
+  .toggle-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .toggle-row:last-of-type{ border-bottom:none; }
+  .t-lbl{ font-size:13.5px; font-weight:500; }
+  .t-sub{ font-size:12px; color:var(--ink-soft); margin-top:3px; line-height:1.5; }
+  .switch{ width:36px; height:20px; border-radius:20px; flex-shrink:0; position:relative; border:none; padding:0; cursor:pointer; }
+  .switch.on{ background:var(--teal); }
+  .switch.off{ background:var(--line); }
+  .switch::after{ content:''; position:absolute; top:2px; width:16px; height:16px; border-radius:50%; background:#fff; }
+  .switch.on::after{ right:2px; }
+  .switch.off::after{ left:2px; }
+
+  .aqi-hero{ display:flex; align-items:center; gap:14px; border-radius:10px; padding:12px 14px; margin-top:8px; }
+  .aqi-hero-good, .aqi-hero-moderate{ background:var(--teal-soft); border:1px solid var(--teal); }
+  .aqi-hero-usg{ background:#F5D9BE; border:1px solid #9A4A00; }
+  .aqi-hero-unhealthy{ background:var(--danger-soft); border:1px solid var(--danger); }
+  .aqi-hero-veryunhealthy{ background:#E4D9F0; border:1px solid var(--violet); }
+  .aqi-num{ font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:600; line-height:1; }
+  .aqi-num-lbl{ display:block; font-size:10px; font-weight:400; text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+  .aqi-desc{ font-size:12.5px; line-height:1.5; }
+  .fire-link{ font-size:12px; color:var(--teal); margin-top:8px; display:inline-block; }
+
   /* main */
   .main{ padding:20px 20px 60px; }
   .empty-state{ text-align:center; padding:56px 20px; color:var(--ink-soft); }
@@ -223,6 +250,12 @@
   .uv-badge.uv-high{ background:#F5D9BE; color:#9A4A00; }
   .uv-badge.uv-vhigh{ background:var(--danger-soft); color:var(--danger); }
   .uv-badge.uv-extreme{ background:#E4D9F0; color:var(--violet); }
+  .aqi-badge{ display:none; font-size:10px; font-family:'IBM Plex Mono',monospace; border-radius:20px; padding:1px 6px; }
+  .aqi-badge.aqi-good{ background:var(--teal-soft); color:var(--teal); }
+  .aqi-badge.aqi-moderate{ background:var(--amber-soft); color:#7A4300; }
+  .aqi-badge.aqi-usg{ background:#F5D9BE; color:#9A4A00; }
+  .aqi-badge.aqi-unhealthy{ background:var(--danger-soft); color:var(--danger); }
+  .aqi-badge.aqi-veryunhealthy{ background:#E4D9F0; color:var(--violet); }
   .desc{ font-size:9.5px; color:var(--ink-soft); margin-top:3px; min-height:11px; }
   .day-chip.placeholder{ opacity:0.75; }
   .day-chip.placeholder .desc{ font-size:10.5px; }
@@ -250,6 +283,7 @@
     }
     .day-chip .badge-stack .precip{ margin-top:0; }
     .day-chip .badge-stack .uv-badge{ display:inline-block; margin-left:0; white-space:nowrap; }
+    .day-chip .badge-stack .aqi-badge{ display:inline-block; margin-left:0; white-space:nowrap; }
   }
 
   .edit-actions-row{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:8px; margin-left:44px; }
@@ -370,6 +404,29 @@ function uvRiskClass(uv){
   if(uv < 11) return 'vhigh';
   return 'extreme';
 }
+function aqiRiskClass(aqi){
+  if(typeof aqi !== 'number') return 'good';
+  if(aqi <= 50) return 'good';
+  if(aqi <= 100) return 'moderate';
+  if(aqi <= 150) return 'usg';
+  if(aqi <= 200) return 'unhealthy';
+  return 'veryunhealthy';
+}
+function aqiCategoryLabel(aqi){
+  if(typeof aqi !== 'number') return '';
+  if(aqi <= 50) return 'Goed';
+  if(aqi <= 100) return 'Matig';
+  if(aqi <= 150) return 'Ongezond voor gevoelige groepen';
+  if(aqi <= 200) return 'Ongezond';
+  if(aqi <= 300) return 'Zeer ongezond';
+  return 'Gevaarlijk';
+}
+function haversineKm(lat1,lon1,lat2,lon2){
+  const R=6371, toRad=d=>d*Math.PI/180;
+  const dLat=toRad(lat2-lat1), dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return 2*R*Math.asin(Math.sqrt(a));
+}
 function moonPhaseLabel(v){
   if(typeof v !== 'number') return null;
   if(v < 0.03 || v > 0.97) return 'Nieuwe maan';
@@ -421,7 +478,7 @@ let state = {
   showBackupPanel: false,
   importFeedback: null,
   showSettingsPanel: false,
-  settings: { provider: 'openmeteo', vcKey: '' },
+  settings: { provider: 'openmeteo', vcKey: '', airQuality: true, showFirms: false, firmsKey: '', inAppWarning: true },
   dayDetail: null // {stopId, date} when a day tile's detail view is open
 };
 const SETTINGS_KEY = 'reisweer-settings';
@@ -443,6 +500,10 @@ function loadSettings(){
       if(parsed && typeof parsed==='object'){
         if(parsed.provider==='openmeteo' || parsed.provider==='visualcrossing') state.settings.provider = parsed.provider;
         if(typeof parsed.vcKey==='string') state.settings.vcKey = parsed.vcKey;
+        if(typeof parsed.airQuality==='boolean') state.settings.airQuality = parsed.airQuality;
+        if(typeof parsed.showFirms==='boolean') state.settings.showFirms = parsed.showFirms;
+        if(typeof parsed.firmsKey==='string') state.settings.firmsKey = parsed.firmsKey;
+        if(typeof parsed.inAppWarning==='boolean') state.settings.inAppWarning = parsed.inAppWarning;
       }
     }
   }catch(e){ /* keep defaults */ }
@@ -627,6 +688,113 @@ async function fetchWeather(stop, key){
 function updateWeatherDom(stopId){
   const el = document.getElementById('weather-'+stopId);
   if(el) el.outerHTML = renderWeatherBlock(stopId);
+}
+
+/* ---------- air quality (per-day forecast, Open-Meteo — same pattern as weather) ---------- */
+const airQualityCache = {}; // stopId -> {key,status,days:{date:{maxAqi,maxPm25}}}
+const AQ_HORIZON_ISO = toISO(addDays(TODAY, 6)); // Air Quality API forecasts up to 7 days, hourly only
+function ensureAirQuality(stop){
+  if(!state.settings.airQuality) return;
+  if(!stop.lat || !stop.lon || !stop.arrival || !stop.departure) return;
+  const key = stop.id+'|'+stop.lat+','+stop.lon+'|'+stop.arrival+'|'+stop.departure;
+  const cached = airQualityCache[stop.id];
+  if(cached && cached.key===key) return;
+  airQualityCache[stop.id] = { key, status:'loading', days:null };
+  fetchAirQuality(stop, key);
+}
+async function fetchAirQuality(stop, key){
+  const fetchStart = stop.arrival < TODAY_ISO ? TODAY_ISO : stop.arrival;
+  const fetchEnd = stop.departure > AQ_HORIZON_ISO ? AQ_HORIZON_ISO : stop.departure;
+  if(fetchStart > fetchEnd){
+    if(airQualityCache[stop.id] && airQualityCache[stop.id].key===key){
+      airQualityCache[stop.id] = { key, status:'ok', days:{} };
+    }
+    return;
+  }
+  try{
+    const url = 'https://air-quality-api.open-meteo.com/v1/air-quality?latitude='+stop.lat+'&longitude='+stop.lon
+      +'&hourly=us_aqi,pm2_5&timezone=auto&start_date='+fetchStart+'&end_date='+fetchEnd;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('bad response');
+    const data = await res.json();
+    const t = (data.hourly && data.hourly.time) || [];
+    const byDate = {};
+    t.forEach((iso,i)=>{
+      const d = iso.slice(0,10);
+      const aqi = data.hourly.us_aqi ? data.hourly.us_aqi[i] : null;
+      const pm25 = data.hourly.pm2_5 ? data.hourly.pm2_5[i] : null;
+      if(!byDate[d]) byDate[d] = { maxAqi:null, maxPm25:null };
+      if(typeof aqi==='number' && (byDate[d].maxAqi===null || aqi>byDate[d].maxAqi)) byDate[d].maxAqi = aqi;
+      if(typeof pm25==='number' && (byDate[d].maxPm25===null || pm25>byDate[d].maxPm25)) byDate[d].maxPm25 = pm25;
+    });
+    if(airQualityCache[stop.id] && airQualityCache[stop.id].key===key){
+      airQualityCache[stop.id] = { key, status:'ok', days: byDate };
+      render();
+    }
+  }catch(e){
+    if(airQualityCache[stop.id] && airQualityCache[stop.id].key===key){
+      airQualityCache[stop.id] = { key, status:'error', days:null };
+    }
+  }
+}
+
+/* ---------- FIRMS (NASA) — recent satellite hotspot snapshot, stop-level, not per-day ----------
+   Unlike weather/air quality, this is not a forecast: it's a report of what's been
+   detected nearby in the last few days. Requires the person's own free NASA MAP_KEY. */
+const firmsCache = {}; // stopId -> {key,status,hotspots:[{lat,lon,date,confidence,distanceKm}]}
+function ensureFirms(stop){
+  if(!state.settings.showFirms) return;
+  const apiKey = (state.settings.firmsKey||'').trim();
+  if(!apiKey) return;
+  if(!stop.lat || !stop.lon) return;
+  const key = stop.id+'|'+stop.lat+','+stop.lon+'|'+apiKey;
+  const cached = firmsCache[stop.id];
+  if(cached && cached.key===key) return;
+  firmsCache[stop.id] = { key, status:'loading', hotspots:null };
+  fetchFirms(stop, key, apiKey);
+}
+async function fetchFirms(stop, key, apiKey){
+  try{
+    const d = 0.6; // roughly a 130km-wide box around the stop
+    const west=(stop.lon-d).toFixed(2), east=(stop.lon+d).toFixed(2), south=(stop.lat-d).toFixed(2), north=(stop.lat+d).toFixed(2);
+    const url = 'https://firms.modaps.eosdis.nasa.gov/api/area/csv/'+encodeURIComponent(apiKey)+'/VIIRS_SNPP_NRT/'+west+','+south+','+east+','+north+'/3';
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('bad response '+res.status);
+    const text = await res.text();
+    const lines = text.trim().split('\n').filter(l=>l.trim().length>0);
+    if(lines.length===0){
+      if(firmsCache[stop.id] && firmsCache[stop.id].key===key){
+        firmsCache[stop.id] = { key, status:'ok', hotspots: [] };
+        render();
+      }
+      return;
+    }
+    const header = lines[0].split(',').map(h=>h.trim());
+    const latIdx = header.indexOf('latitude'), lonIdx = header.indexOf('longitude');
+    if(latIdx===-1 || lonIdx===-1) throw new Error('unexpected response format');
+    const dateIdx = header.indexOf('acq_date'), confIdx = header.indexOf('confidence');
+    const hotspots = [];
+    for(let i=1;i<lines.length;i++){
+      const cols = lines[i].split(',');
+      const hLat = parseFloat(cols[latIdx]), hLon = parseFloat(cols[lonIdx]);
+      if(!isFinite(hLat) || !isFinite(hLon)) continue;
+      hotspots.push({
+        lat:hLat, lon:hLon,
+        date: dateIdx>=0 ? cols[dateIdx] : null,
+        confidence: confIdx>=0 ? cols[confIdx] : null,
+        distanceKm: haversineKm(stop.lat, stop.lon, hLat, hLon)
+      });
+    }
+    hotspots.sort((a,b)=>a.distanceKm-b.distanceKm);
+    if(firmsCache[stop.id] && firmsCache[stop.id].key===key){
+      firmsCache[stop.id] = { key, status:'ok', hotspots: hotspots.slice(0,8) };
+      render();
+    }
+  }catch(e){
+    if(firmsCache[stop.id] && firmsCache[stop.id].key===key){
+      firmsCache[stop.id] = { key, status:'error', hotspots:null };
+    }
+  }
 }
 
 /* ---------- hourly detail (lazy-loaded per day, on click) ---------- */
@@ -866,6 +1034,26 @@ App.setVcKey = function(value){
   saveSettingsState();
 };
 
+App.toggleAirQuality = function(){
+  state.settings.airQuality = !state.settings.airQuality;
+  saveSettingsState();
+  render();
+};
+App.toggleFirms = function(){
+  state.settings.showFirms = !state.settings.showFirms;
+  saveSettingsState();
+  render();
+};
+App.setFirmsKey = function(value){
+  state.settings.firmsKey = value;
+  saveSettingsState();
+};
+App.toggleInAppWarning = function(){
+  state.settings.inAppWarning = !state.settings.inAppWarning;
+  saveSettingsState();
+  render();
+};
+
 App.openDayDetail = function(stopId, date){
   state.dayDetail = { stopId, date };
   state.showBackupPanel = false;
@@ -980,6 +1168,7 @@ function renderWeatherBlock(stopId){
     return '<div id="weather-'+stopId+'" class="weather-status">'+msg+'</div>';
   }
   const hasApprox = cache.days.some(d=>d.kind==='ok' && d.approx);
+  const aqCache = airQualityCache[stopId];
   const chips = cache.days.map(d=>{
     const isToday = d.date===TODAY_ISO;
     if(d.kind==='ok'){
@@ -987,13 +1176,16 @@ function renderWeatherBlock(stopId){
         ? '<span class="precip">'+Math.round(d.precip)+'%</span>' : '';
       const uvBadge = (typeof d.uvMax==='number')
         ? '<span class="uv-badge uv-'+uvRiskClass(d.uvMax)+'">UV '+Math.round(d.uvMax)+'</span>' : '';
+      const aqDay = (state.settings.airQuality && aqCache && aqCache.status==='ok') ? aqCache.days[d.date] : null;
+      const aqiBadge = (aqDay && typeof aqDay.maxAqi==='number')
+        ? '<span class="aqi-badge aqi-'+aqiRiskClass(aqDay.maxAqi)+'">AQI '+Math.round(aqDay.maxAqi)+'</span>' : '';
       const tilde = d.approx ? '~' : '';
       return '<button type="button" class="day-chip'+(isToday?' is-today':'')+(d.approx?' is-approx':'')+'" onclick="App.openDayDetail(\''+stopId+'\',\''+d.date+'\')">'
         +'<div class="day-label">'+formatDayLabel(d.date)+'</div>'
         +iconSvg(d.iconKey)
         +'<div class="temps"><span class="t-max">'+tilde+fmtTemp(d.tmax)+'</span> <span class="t-min">'+tilde+fmtTemp(d.tmin)+'</span></div>'
         +'<div class="desc">'+d.label+'</div>'
-        +'<div class="badge-stack">'+precip+uvBadge+'</div></button>';
+        +'<div class="badge-stack">'+precip+uvBadge+aqiBadge+'</div></button>';
     }
     const msg = d.kind==='future' ? 'Nog te ver vooruit' : d.kind==='past' ? 'Verstreken' : 'Onbekend';
     return '<div class="day-chip placeholder'+(isToday?' is-today':'')+'">'
@@ -1002,7 +1194,20 @@ function renderWeatherBlock(stopId){
       +'<div class="desc">'+msg+'</div></div>';
   }).join('');
   const legend = hasApprox ? '<p class="modal-hint" style="margin:6px 0 0;">~ = langjarig gemiddelde (statistisch), geen harde voorspelling.</p>' : '';
-  return '<div id="weather-'+stopId+'"><div class="weather-row">'+chips+'</div>'+legend+'</div>';
+  return '<div id="weather-'+stopId+'">'+renderFirmsRiskRow(stopId)+'<div class="weather-row">'+chips+'</div>'+legend+'</div>';
+}
+
+function renderFirmsRiskRow(stopId){
+  if(!state.settings.showFirms) return '';
+  const cache = firmsCache[stopId];
+  if(!cache || cache.status!=='ok' || !cache.hotspots || !cache.hotspots.length) return '';
+  const nearest = cache.hotspots[0];
+  if(nearest.distanceKm > 60) return '';
+  const count = cache.hotspots.length;
+  return '<div class="risk-row">'
+    +'<div class="badge-circle"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 20h12M8 20c-1.5-3 0-5 2-7-.5 2 .5 2.5 1 1.5 1 2 3 2.5 3 5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+    +'<div class="risk-text"><strong>Actieve brandhaard'+(count>1?'en':'')+' dichtbij</strong> — dichtstbij op ongeveer '+Math.round(nearest.distanceKm)+' km (NASA FIRMS, laatste 3 dagen)</div>'
+  +'</div>';
 }
 
 function renderStopRow(trip, stop, index){
@@ -1125,7 +1330,40 @@ function renderTripView(trip){
       +'<h2 class="display trip-view-title">'+escHtml(trip.name||'Naamloos reisplan')+'</h2>'
       +'<div class="trip-sub">'+trip.stops.length+' stop'+(trip.stops.length===1?'':'s')+(range?' · '+range:'')+'</div>'
     +'</div>'
+    +renderTripRiskBanner(trip)
     +'<div class="stops-list">'+stopsHtml+'</div>'
+  +'</div>';
+}
+
+function renderTripRiskBanner(trip){
+  if(!state.settings.inAppWarning) return '';
+  let worst = null;
+  trip.stops.forEach((s,idx)=>{
+    if(state.settings.airQuality){
+      const aq = airQualityCache[s.id];
+      if(aq && aq.status==='ok'){
+        Object.keys(aq.days).forEach(d=>{
+          const val = aq.days[d].maxAqi;
+          if(typeof val==='number' && val>100 && (!worst || (worst.type==='aqi' && val>worst.aqi))){
+            worst = { type:'aqi', aqi:val, stopName:s.name, stopIndex:idx+1 };
+          }
+        });
+      }
+    }
+    if(state.settings.showFirms && (!worst || worst.type==='aqi')){
+      const f = firmsCache[s.id];
+      if(f && f.status==='ok' && f.hotspots && f.hotspots.length && f.hotspots[0].distanceKm<=60){
+        worst = { type:'fire', distanceKm:f.hotspots[0].distanceKm, stopName:s.name, stopIndex:idx+1 };
+      }
+    }
+  });
+  if(!worst) return '';
+  const msg = worst.type==='aqi'
+    ? 'Verhoogde luchtvervuiling verwacht bij '+escHtml(worst.stopName||'een stop')+' (stop '+worst.stopIndex+', AQI '+Math.round(worst.aqi)+').'
+    : 'Actieve brandhaard dichtbij '+escHtml(worst.stopName||'een stop')+' (stop '+worst.stopIndex+', ongeveer '+Math.round(worst.distanceKm)+' km).';
+  return '<div class="risk-row">'
+    +'<div class="badge-circle"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 9v3m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+    +'<div class="risk-text"><strong>Let op:</strong> '+msg+'</div>'
   +'</div>';
 }
 
@@ -1177,6 +1415,11 @@ function renderBackupModal(){
   +'</div>';
 }
 
+function renderToggleRow(label, sub, on, onclickExpr){
+  return '<div class="toggle-row"><div><div class="t-lbl">'+label+'</div><div class="t-sub">'+sub+'</div></div>'
+    +'<button type="button" class="switch '+(on?'on':'off')+'" onclick="'+onclickExpr+'" aria-label="'+escAttr(label)+'"></button></div>';
+}
+
 function renderSettingsModal(){
   if(!state.showSettingsPanel) return '';
   const s = state.settings;
@@ -1188,6 +1431,15 @@ function renderSettingsModal(){
       +'<p class="modal-hint">Nodig om verder dan ~15 dagen vooruit te kunnen kijken. Gratis account: 1000 opvragingen/dag. '
         +'<a href="https://www.visualcrossing.com/sign-up" target="_blank" rel="noopener" style="color:var(--teal);">Sleutel aanmaken ↗</a><br>'
         +'Je sleutel wordt alleen lokaal in je browser bewaard en rechtstreeks naar Visual Crossing gestuurd — nergens anders naartoe.</p>'
+    +'</div>'
+  ) : '';
+  const firmsSection = s.showFirms ? (
+    '<div style="margin-top:10px;">'
+      +'<label style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);display:block;margin-bottom:4px;">NASA FIRMS MAP_KEY</label>'
+      +'<input type="text" id="firms-key-input" value="'+escAttr(s.firmsKey||'')+'" placeholder="Plak hier je gratis NASA-sleutel" '
+        +'oninput="App.setFirmsKey(this.value)" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:13px;font-family:\'IBM Plex Mono\',monospace;background:var(--paper);color:var(--ink);" />'
+      +'<p class="modal-hint">Gratis aan te vragen bij NASA. <a href="https://firms.modaps.eosdis.nasa.gov/api/map_key/" target="_blank" rel="noopener" style="color:var(--teal);">Sleutel aanvragen ↗</a><br>'
+        +'Je sleutel wordt alleen lokaal bewaard en rechtstreeks naar NASA gestuurd. Werkt dit niet vanuit je browser, dan zie je dat als duidelijke foutmelding bij de stop.</p>'
     +'</div>'
   ) : '';
   return '<div class="modal-overlay" onclick="if(event.target===this){App.closeSettings();}">'
@@ -1202,6 +1454,11 @@ function renderSettingsModal(){
       +'<label class="provider-option"><input type="radio" name="provider" '+(s.provider==='visualcrossing'?'checked':'')+' onchange="App.setProvider(\'visualcrossing\')" />'
         +'<span><strong>Visual Crossing</strong> <span class="modal-hint" style="margin:2px 0 0;display:block;">Eigen gratis sleutel nodig. Kijkt verder vooruit, maar dagen na ~15 dagen zijn een langjarig gemiddelde (zie ~), geen harde voorspelling.</span></span></label>'
       +vcSection
+      +'<h4 style="margin-top:18px;">Bosbrand &amp; luchtkwaliteit</h4>'
+      +renderToggleRow('Luchtkwaliteit tonen', 'Gebruikt Open-Meteo Air Quality — gratis, geen sleutel nodig, tot ~7 dagen vooruit.', s.airQuality, 'App.toggleAirQuality()')
+      +renderToggleRow('Brandhaarden tonen (NASA FIRMS)', 'Optioneel, vereist een eigen gratis NASA-sleutel. Toont recente satellietwaarnemingen in de buurt — wereldwijd, dus ook Europa — geen voorspelling.', s.showFirms, 'App.toggleFirms()')
+      +firmsSection
+      +renderToggleRow('Waarschuwing bij openen van de app', 'Toont een melding als een stop in je reis verhoogd risico heeft. Werkt alleen zolang je de app open hebt.', s.inAppWarning, 'App.toggleInAppWarning()')
       +'<h4 style="margin-top:18px;">Gegevens</h4>'
       +'<button type="button" class="backup-btn" onclick="App.openBackupPanel()">'
         +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
@@ -1285,6 +1542,9 @@ function renderDayDetailModal(){
       +'<div class="chart-legend"><span><i class="legend-dot legend-temp"></i>Temperatuur (°C)</span><span><i class="legend-dot legend-precip"></i>Neerslagkans (%)</span></div>';
   }
 
+  const aqSection = renderAirQualitySection(stopId, date);
+  const firmsSection = renderFirmsDetailSection(stopId);
+
   return '<div class="modal-overlay" onclick="if(event.target===this){App.closeDayDetail();}">'
     +'<div class="modal-card">'
       +'<div class="modal-head">'
@@ -1300,8 +1560,49 @@ function renderDayDetailModal(){
       +approxNote
       +'<h4 style="margin-top:16px;">Verloop per uur</h4>'
       +chartSection
+      +aqSection
+      +firmsSection
     +'</div>'
   +'</div>';
+}
+
+function renderAirQualitySection(stopId, date){
+  if(!state.settings.airQuality) return '';
+  const cache = airQualityCache[stopId];
+  const day = cache && cache.status==='ok' ? cache.days[date] : null;
+  if(!day || typeof day.maxAqi!=='number'){
+    const note = (cache && cache.status==='ok' && date>AQ_HORIZON_ISO)
+      ? 'Nog niet bekend — luchtkwaliteit is maar tot ~7 dagen vooruit te voorspellen.'
+      : null;
+    return note ? '<h4 style="margin-top:18px;">Luchtkwaliteit</h4><p class="weather-status">'+note+'</p>' : '';
+  }
+  const cls = aqiRiskClass(day.maxAqi);
+  return '<h4 style="margin-top:18px;">Luchtkwaliteit</h4>'
+    +'<div class="aqi-hero aqi-hero-'+cls+'">'
+      +'<div class="aqi-num">'+Math.round(day.maxAqi)+'<span class="aqi-num-lbl">AQI</span></div>'
+      +'<div class="aqi-desc"><strong>'+aqiCategoryLabel(day.maxAqi)+'</strong>'
+        +(typeof day.maxPm25==='number' ? '<br>PM2,5: '+(Math.round(day.maxPm25*10)/10)+' µg/m³' : '')
+      +'</div>'
+    +'</div>';
+}
+
+function renderFirmsDetailSection(stopId){
+  if(!state.settings.showFirms) return '';
+  const cache = firmsCache[stopId];
+  if(!cache || cache.status==='loading') return '<h4 style="margin-top:18px;">Brandhaarden (NASA FIRMS)</h4><p class="weather-status">Laden…</p>';
+  if(cache.status==='error') return '<h4 style="margin-top:18px;">Brandhaarden (NASA FIRMS)</h4><p class="weather-status">Kon geen brandhaarddata ophalen. Controleer je NASA-sleutel in Instellingen.</p>';
+  const stop = findStopById(stopId);
+  const mapUrl = 'https://firms.modaps.eosdis.nasa.gov/map/';
+  if(!cache.hotspots || !cache.hotspots.length){
+    return '<h4 style="margin-top:18px;">Brandhaarden (NASA FIRMS)</h4><p class="weather-status">Geen actieve branden gedetecteerd in de omgeving in de laatste 3 dagen.</p>';
+  }
+  const top = cache.hotspots.slice(0,3).map(h=>
+    '<div class="detail-row"><span class="detail-label">'+(h.date?escHtml(h.date):'Onbekende datum')+'</span><span class="detail-value">±'+Math.round(h.distanceKm)+' km</span></div>'
+  ).join('');
+  return '<h4 style="margin-top:18px;">Brandhaarden (NASA FIRMS)</h4>'
+    +'<p class="modal-hint" style="margin-top:0;">Recente satellietwaarnemingen dichtbij — geen voorspelling voor deze specifieke dag.</p>'
+    +'<div class="detail-grid">'+top+'</div>'
+    +'<a class="fire-link" href="'+mapUrl+'" target="_blank" rel="noopener">Bekijk op de NASA FIRMS-kaart ↗</a>';
 }
 
 function render(){
@@ -1310,7 +1611,7 @@ function render(){
   const modalHost = document.getElementById('modal-host');
   if(modalHost) modalHost.innerHTML = renderBackupModal() + renderSettingsModal() + renderDayDetailModal();
   const trip = state.trips.find(t=>t.id===state.selectedTripId);
-  if(trip){ trip.stops.forEach(s=>ensureWeather(s)); }
+  if(trip){ trip.stops.forEach(s=>{ ensureWeather(s); ensureAirQuality(s); ensureFirms(s); }); }
 }
 
 loadSettings();
