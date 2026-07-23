@@ -1066,22 +1066,13 @@ function renderSidebar(){
     +'</li>';
   }).join('');
   const dataNote = '<p style="font-size:11px;color:var(--ink-soft);line-height:1.4;margin:0 0 10px;">Zoeken en weer vereisen een actieve internetverbinding.</p>';
-  const footer = state.trips.length ? (
-    state.confirmClearAll
-      ? '<div class="confirm-row">Alles wissen?'
-        +'<button type="button" class="mini-btn" onclick="App.clearAllConfirm()">Ja</button>'
-        +'<button type="button" class="mini-btn" onclick="App.clearAllCancel()">Nee</button></div>'
-      : '<button type="button" class="text-link" onclick="App.clearAllAsk()">Alle reisplannen wissen</button>'
-  ) : '';
   return '<div class="sidebar">'
     +'<p class="sidebar-title">Reisplannen</p>'
     +'<ul class="trip-list">'+items+'</ul>'
     +'<button type="button" class="new-trip-btn" onclick="App.newTrip()">'
       +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>'
       +'Nieuw reisplan</button>'
-    +'<div class="sidebar-foot">'+dataNote
-      +(footer?'<div style="margin-top:10px;">'+footer+'</div>':'')
-    +'</div>'
+    +'<div class="sidebar-foot">'+dataNote+'</div>'
   +'</div>';
 }
 
@@ -1230,6 +1221,15 @@ function renderSettingsModal(){
         +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         +'Bewaren &amp; laden</button>'
       +'<p class="modal-hint">Reisplannen als bestand downloaden of als tekst kopiëren, en later weer inladen.</p>'
+      +(state.trips.length ? (
+        '<div style="margin-top:10px;">'
+          +(state.confirmClearAll
+            ? '<div class="confirm-row">Alle reisplannen wissen?'
+              +'<button type="button" class="mini-btn" onclick="App.clearAllConfirm()">Ja</button>'
+              +'<button type="button" class="mini-btn" onclick="App.clearAllCancel()">Nee</button></div>'
+            : '<button type="button" class="text-link" onclick="App.clearAllAsk()">Alle reisplannen wissen</button>')
+        +'</div>'
+      ) : '')
       +'<h4 style="margin-top:18px;">Over deze app</h4>'
       +'<p class="modal-hint" style="margin-top:0;">Broncode op <a href="https://github.com/bjornvaessen/reisweer" target="_blank" rel="noopener" style="color:var(--teal);">github.com/bjornvaessen/reisweer</a>.<br>'
         +'Open source onder de <a href="https://github.com/bjornvaessen/reisweer/blob/main/LICENSE" target="_blank" rel="noopener" style="color:var(--teal);">GNU GPLv3-licentie</a>.</p>'
