@@ -138,8 +138,8 @@
   .legend-precip{ background:var(--teal-soft); border:1px solid var(--teal); }
 
   .risk-row{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; margin-bottom:12px; background:var(--danger-soft); border:1px solid var(--danger); }
-  .badge-circle{ width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--danger); }
-  .badge-circle svg{ width:15px; height:15px; }
+  .badge-circle{ width:38px; height:38px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--danger); }
+  .badge-circle svg{ width:26px; height:26px; }
   .risk-text{ font-size:12.5px; line-height:1.4; }
   .risk-text strong{ color:var(--danger); }
 
@@ -427,6 +427,11 @@ function haversineKm(lat1,lon1,lat2,lon2){
   const a=Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);
   return 2*R*Math.asin(Math.sqrt(a));
 }
+function firmsMapLink(lat, lon){
+  // Zoom 10 shows roughly a 50-75km-wide view in FIRMS' map viewer — close to the
+  // requested ~50km range (exact width varies slightly with screen size).
+  return 'https://firms.modaps.eosdis.nasa.gov/map/#m:advanced;d:24hrs;@'+lon.toFixed(4)+','+lat.toFixed(4)+',10z';
+}
 function moonPhaseLabel(v){
   if(typeof v !== 'number') return null;
   if(v < 0.03 || v > 0.97) return 'Nieuwe maan';
@@ -465,6 +470,12 @@ function iconSvg(name){
   const s = WEATHER_STYLE[name] || WEATHER_STYLE.cloud;
   return '<svg class="day-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="20" fill="'+s.color+'"/><g fill="#fff" fill-rule="evenodd">'+s.glyph+'</g></svg>';
 }
+
+/* Flame icon for fire-risk notices — sized to actually fill the badge, unlike a small
+   generic warning glyph, so it reads clearly as fire rather than a vague icon. */
+const FLAME_ICON_SVG = '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">'
+  +'<path d="M20 5c-2 4-7 8-7 14a7 7 0 0 0 14 0c0-3-1.5-5-3-6.5.3 2-.7 3.5-2 3.5-1.8 0-2-2.5-1-5.5C21.5 8.5 20.8 6.5 20 5Z" fill="#fff" fill-rule="evenodd"/>'
+  +'</svg>';
 
 /* ---------- state ---------- */
 let state = {
@@ -1205,7 +1216,7 @@ function renderFirmsRiskRow(stopId){
   if(nearest.distanceKm > 60) return '';
   const count = cache.hotspots.length;
   return '<div class="risk-row">'
-    +'<div class="badge-circle"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 20h12M8 20c-1.5-3 0-5 2-7-.5 2 .5 2.5 1 1.5 1 2 3 2.5 3 5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+    +'<div class="badge-circle">'+FLAME_ICON_SVG+'</div>'
     +'<div class="risk-text"><strong>Actieve brandhaard'+(count>1?'en':'')+' dichtbij</strong> — dichtstbij op ongeveer '+Math.round(nearest.distanceKm)+' km (NASA FIRMS, laatste 3 dagen)</div>'
   +'</div>';
 }
@@ -1337,33 +1348,37 @@ function renderTripView(trip){
 
 function renderTripRiskBanner(trip){
   if(!state.settings.inAppWarning) return '';
-  let worst = null;
+  const items = [];
   trip.stops.forEach((s,idx)=>{
     if(state.settings.airQuality){
       const aq = airQualityCache[s.id];
       if(aq && aq.status==='ok'){
+        let stopMaxAqi = null;
         Object.keys(aq.days).forEach(d=>{
           const val = aq.days[d].maxAqi;
-          if(typeof val==='number' && val>100 && (!worst || (worst.type==='aqi' && val>worst.aqi))){
-            worst = { type:'aqi', aqi:val, stopName:s.name, stopIndex:idx+1 };
-          }
+          if(typeof val==='number' && val>100 && (stopMaxAqi===null || val>stopMaxAqi)) stopMaxAqi = val;
         });
+        if(stopMaxAqi!==null) items.push({ type:'aqi', aqi:stopMaxAqi, stopName:s.name, stopIndex:idx+1 });
       }
     }
-    if(state.settings.showFirms && (!worst || worst.type==='aqi')){
+    if(state.settings.showFirms){
       const f = firmsCache[s.id];
       if(f && f.status==='ok' && f.hotspots && f.hotspots.length && f.hotspots[0].distanceKm<=60){
-        worst = { type:'fire', distanceKm:f.hotspots[0].distanceKm, stopName:s.name, stopIndex:idx+1 };
+        items.push({ type:'fire', distanceKm:f.hotspots[0].distanceKm, stopName:s.name, stopIndex:idx+1 });
       }
     }
   });
-  if(!worst) return '';
-  const msg = worst.type==='aqi'
-    ? 'Verhoogde luchtvervuiling verwacht bij '+escHtml(worst.stopName||'een stop')+' (stop '+worst.stopIndex+', AQI '+Math.round(worst.aqi)+').'
-    : 'Actieve brandhaard dichtbij '+escHtml(worst.stopName||'een stop')+' (stop '+worst.stopIndex+', ongeveer '+Math.round(worst.distanceKm)+' km).';
-  return '<div class="risk-row">'
-    +'<div class="badge-circle"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 9v3m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
-    +'<div class="risk-text"><strong>Let op:</strong> '+msg+'</div>'
+  if(!items.length) return '';
+  const lines = items.map(it => it.type==='aqi'
+    ? 'Verhoogde luchtvervuiling bij '+escHtml(it.stopName||'een stop')+' (stop '+it.stopIndex+', AQI '+Math.round(it.aqi)+')'
+    : 'Actieve brandhaard dichtbij '+escHtml(it.stopName||'een stop')+' (stop '+it.stopIndex+', ongeveer '+Math.round(it.distanceKm)+' km)'
+  );
+  const body = items.length===1
+    ? lines[0]+'.'
+    : '<ul style="margin:4px 0 0;padding-left:16px;">'+lines.map(l=>'<li>'+l+'.</li>').join('')+'</ul>';
+  return '<div class="risk-row" style="align-items:flex-start;">'
+    +'<div class="badge-circle">'+FLAME_ICON_SVG+'</div>'
+    +'<div class="risk-text"><strong>Let op'+(items.length>1?' — '+items.length+' meldingen':'')+':</strong> '+body+'</div>'
   +'</div>';
 }
 
@@ -1592,7 +1607,7 @@ function renderFirmsDetailSection(stopId){
   if(!cache || cache.status==='loading') return '<h4 style="margin-top:18px;">Brandhaarden (NASA FIRMS)</h4><p class="weather-status">Laden…</p>';
   if(cache.status==='error') return '<h4 style="margin-top:18px;">Brandhaarden (NASA FIRMS)</h4><p class="weather-status">Kon geen brandhaarddata ophalen. Controleer je NASA-sleutel in Instellingen.</p>';
   const stop = findStopById(stopId);
-  const mapUrl = 'https://firms.modaps.eosdis.nasa.gov/map/';
+  const mapUrl = (stop && stop.lat && stop.lon) ? firmsMapLink(stop.lat, stop.lon) : 'https://firms.modaps.eosdis.nasa.gov/map/';
   if(!cache.hotspots || !cache.hotspots.length){
     return '<h4 style="margin-top:18px;">Brandhaarden (NASA FIRMS)</h4><p class="weather-status">Geen actieve branden gedetecteerd in de omgeving in de laatste 3 dagen.</p>';
   }
