@@ -268,11 +268,6 @@
   }
   .save-error-banner button{ background:none; border:none; color:#7A4300; font-size:16px; line-height:1; padding:0 2px; flex-shrink:0; }
   @media (min-width:880px){ .save-error-banner{ margin:14px 20px 0; grid-column:1/-1; } }
-  .save-ok-banner{
-    background:var(--teal-soft); color:var(--teal); border:1px solid var(--teal);
-    border-radius:8px; padding:9px 12px; font-size:12.5px; margin:0 20px 14px; font-weight:500;
-  }
-  @media (min-width:880px){ .save-ok-banner{ margin:14px 20px 0; grid-column:1/-1; } }
 
   ::selection{ background:var(--amber-soft); }
 </style>
@@ -423,7 +418,6 @@ let state = {
   confirmDeleteTripId: null,
   confirmClearAll: false,
   saveError: null,
-  saveConfirmation: null,
   showBackupPanel: false,
   importFeedback: null,
   showSettingsPanel: false,
@@ -468,7 +462,6 @@ function loadTrips(){
   render();
 }
 let saveTimer=null;
-let saveConfirmTimer=null;
 function persistTripsNow(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.trips));
@@ -749,14 +742,11 @@ App.newTrip = function(){
 };
 App.viewTrip = function(id){ state.selectedTripId = id; state.mode = 'view'; render(); };
 App.editTrip = function(id){ state.selectedTripId = id; state.mode = 'edit'; render(); };
-App.saveAndCloseTrip = function(tripId){
+App.finishEditingTrip = function(tripId){
   clearTimeout(saveTimer);
-  persistTripsNow();
+  persistTripsNow(); // defensive flush — changes are already autosaved continuously
   state.mode = 'view';
-  state.saveConfirmation = 'Reisplan opgeslagen';
   render();
-  clearTimeout(saveConfirmTimer);
-  saveConfirmTimer = setTimeout(()=>{ state.saveConfirmation = null; render(); }, 2200);
 };
 App.askDeleteTrip = function(id){ state.confirmDeleteTripId = id; render(); };
 App.cancelDeleteTrip = function(){ state.confirmDeleteTripId = null; render(); };
@@ -1115,9 +1105,9 @@ function renderTripEdit(trip){
       +'<button type="button" class="add-stop-btn" onclick="App.addStop(\''+trip.id+'\')">'
         +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>'
         +'Stop toevoegen</button>'
-      +'<button type="button" class="btn btn-primary" onclick="App.saveAndCloseTrip(\''+trip.id+'\')">'
+      +'<button type="button" class="btn btn-primary" onclick="App.finishEditingTrip(\''+trip.id+'\')">'
         +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px;"><path d="M5 12.5l4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-        +'Reisplan bewaren</button>'
+        +'Klaar</button>'
     +'</div>'
   +'</div>';
 }
@@ -1156,11 +1146,6 @@ function renderSaveErrorBanner(){
   if(!state.saveError) return '';
   return '<div class="save-error-banner"><span>'+escHtml(state.saveError)+'</span>'
     +'<button type="button" onclick="App.dismissSaveError()" aria-label="Melding sluiten">×</button></div>';
-}
-
-function renderSaveConfirmationBanner(){
-  if(!state.saveConfirmation) return '';
-  return '<div class="save-ok-banner"><span>✓ '+escHtml(state.saveConfirmation)+'</span></div>';
 }
 
 function renderBackupModal(){
@@ -1321,7 +1306,7 @@ function renderDayDetailModal(){
 
 function render(){
   const layout = document.getElementById('layout');
-  layout.innerHTML = renderSaveErrorBanner() + renderSaveConfirmationBanner() + renderSidebar() + renderMain();
+  layout.innerHTML = renderSaveErrorBanner() + renderSidebar() + renderMain();
   const modalHost = document.getElementById('modal-host');
   if(modalHost) modalHost.innerHTML = renderBackupModal() + renderSettingsModal() + renderDayDetailModal();
   const trip = state.trips.find(t=>t.id===state.selectedTripId);
