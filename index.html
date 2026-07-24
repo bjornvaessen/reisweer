@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#186A72">
+<meta name="theme-color" content="#F5F0E3" id="theme-color-meta">
 <meta name="apple-mobile-web-app-title" content="Reisweer">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -17,40 +17,72 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  /* ---------- LIGHT (default) ---------- */
   :root{
-    --paper:#EEF1EC;
-    --card:#FFFFFF;
-    --ink:#20262A;
-    --ink-soft:#5B6663;
-    --line:#CBD3C8;
-    --amber:#E07C1E;
-    --amber-soft:#F6E3CC;
-    --teal:#186A72;
-    --teal-soft:#D9EAE8;
-    --violet:#5C4A87;
-    --slate:#8B948F;
-    --iceblue:#4C86B8;
+    --paper:#F5F0E3;
+    --card:#FBF8F0;
+    --ink:#201C14;
+    --ink-soft:#8B7C63;
+    --line:#DCD3BC;
+    --amber:#EAA83E;
+    --amber-soft:#F8E7C6;
+    --amber-ink:#7A4300;
+    --accent:#E14A34;
+    --accent-soft:#FBDBD4;
+    --accent-dark:#B93A28;
+    --violet:#7A4F92;
+    --violet-soft:#E9DEEF;
+    --slate:#8B8574;
+    --iceblue:#3E7CA8;
+    --high:#C97324;
+    --high-soft:#F5D9BE;
     --danger:#B8402A;
     --danger-soft:#F5DCD5;
+    --tile-bg:#181B22;
+    --tile-bg-2:#262B38;
+    --tile-text:#F2ECDD;
+    --tile-text-soft:#9BA3B8;
     --radius:10px;
-    --shadow:0 1px 2px rgba(32,38,42,0.06), 0 4px 14px rgba(32,38,42,0.06);
+    --shadow:0 1px 2px rgba(32,28,20,.08), 0 4px 14px rgba(32,28,20,.08);
+  }
+  /* ---------- DARK — follows the device automatically unless overridden ---------- */
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme]){
+      --paper:#14171F; --card:#1D2230; --ink:#EDE7D8; --ink-soft:#8B93A8; --line:#333B4F;
+      --amber:#EAA83E; --amber-soft:#3A2E1A; --amber-ink:#F2D9A8;
+      --accent:#EAA83E; --accent-soft:#3A331A; --accent-dark:#F0B85A;
+      --violet:#9B72B0; --violet-soft:#332A3D; --slate:#9DA3B0; --iceblue:#5FA3D0;
+      --high:#D98A3F; --high-soft:#3A2C1C; --danger:#E75B45; --danger-soft:#3A2320;
+      --tile-bg:#F2ECDD; --tile-bg-2:#E4DCC5; --tile-text:#201C14; --tile-text-soft:#7A705A;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.3);
+    }
+  }
+  [data-theme="dark"]{
+    --paper:#14171F; --card:#1D2230; --ink:#EDE7D8; --ink-soft:#8B93A8; --line:#333B4F;
+    --amber:#EAA83E; --amber-soft:#3A2E1A; --amber-ink:#F2D9A8;
+    --accent:#EAA83E; --accent-soft:#3A331A; --accent-dark:#F0B85A;
+    --violet:#9B72B0; --violet-soft:#332A3D; --slate:#9DA3B0; --iceblue:#5FA3D0;
+    --high:#D98A3F; --high-soft:#3A2C1C; --danger:#E75B45; --danger-soft:#3A2320;
+    --tile-bg:#F2ECDD; --tile-bg-2:#E4DCC5; --tile-text:#201C14; --tile-text-soft:#7A705A;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.3);
   }
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; }
   body{
     background:var(--paper);
     color:var(--ink);
-    font-family:'IBM Plex Sans', sans-serif;
+    font-family:'Manrope', sans-serif;
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
+    transition:background .15s ease, color .15s ease;
   }
-  h1,h2,h3,.display{ font-family:'IBM Plex Sans Condensed', sans-serif; font-weight:600; letter-spacing:0.01em; margin:0; }
-  .mono{ font-family:'IBM Plex Mono', monospace; }
+  h1,h2,h3,.display{ font-family:'Big Shoulders Display', sans-serif; font-weight:800; text-transform:uppercase; letter-spacing:0.01em; margin:0; }
+  .mono{ font-family:'Space Mono', monospace; }
   button{ font-family:inherit; cursor:pointer; }
   input{ font-family:inherit; }
-  button:focus-visible, input:focus-visible, a:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+  button:focus-visible, input:focus-visible, a:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
   /* header */
   .topbar{
@@ -62,6 +94,7 @@
   .brand h1{ font-size:19px; line-height:1.1; }
   .brand p{ margin:2px 0 0; font-size:12.5px; color:var(--ink-soft); }
   .settings-btn{ flex-shrink:0; padding:8px; }
+  .topbar-actions{ display:flex; align-items:center; gap:4px; flex-shrink:0; }
 
   /* layout */
   .layout{ max-width:1180px; margin:0 auto; }
@@ -75,33 +108,38 @@
     .sidebar{ border-bottom:none; border-right:1px solid var(--line); min-height:calc(100vh - 66px); position:sticky; top:0; }
   }
   .sidebar-title{ font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); margin:0 0 10px; }
-  .trip-list{ list-style:none; margin:0 0 14px; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .trip-list{ list-style:none; margin:0 0 16px; padding:0; display:flex; flex-direction:column; gap:14px; }
   .trip-item{
     display:flex; align-items:center; justify-content:space-between; gap:6px;
-    padding:9px 10px; border-radius:var(--radius); border:1px solid transparent;
+    padding:10px 12px; border-radius:8px;
+    background:var(--tile-bg); color:var(--tile-text); box-shadow:var(--shadow);
+    transform:rotate(-0.5deg);
   }
-  .trip-item.active{ background:var(--card); border-color:var(--line); box-shadow:var(--shadow); }
-  .trip-select{ background:none; border:none; flex:1; min-width:0; text-align:left; padding:0; font-size:14px; color:var(--ink); }
+  .trip-item:nth-child(even){ transform:rotate(0.5deg); }
+  .trip-item.active{ box-shadow:0 0 0 2px var(--accent), var(--shadow); }
+  .trip-select{ background:none; border:none; flex:1; min-width:0; text-align:left; padding:0; font-size:14px; color:var(--tile-text); font-weight:700; font-family:'Big Shoulders Display',sans-serif; text-transform:uppercase; letter-spacing:.02em; }
   .trip-select span{ display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .trip-meta{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .trip-meta{ font-size:10.5px; color:var(--tile-text-soft); margin-top:2px; font-family:'Space Mono',monospace; }
   .icon-btn{ background:none; border:none; padding:5px; border-radius:6px; color:var(--ink-soft); display:flex; flex-shrink:0; }
-  .icon-btn:hover{ background:var(--teal-soft); color:var(--teal); }
+  .icon-btn:hover{ background:var(--accent-soft); color:var(--accent); }
+  .trip-item .icon-btn{ color:var(--tile-text-soft); }
+  .trip-item .icon-btn:hover{ background:rgba(128,128,128,.2); color:var(--tile-text); }
   .new-trip-btn{
     display:flex; align-items:center; gap:8px; width:100%;
     padding:9px 12px; border-radius:var(--radius); border:1px dashed var(--line);
-    background:none; color:var(--teal); font-size:13.5px; font-weight:500;
+    background:none; color:var(--accent); font-size:13.5px; font-weight:500;
   }
-  .new-trip-btn:hover{ border-color:var(--teal); background:var(--teal-soft); }
+  .new-trip-btn:hover{ border-color:var(--accent); background:var(--accent-soft); }
   .confirm-row{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--danger); flex-wrap:wrap; }
   .mini-btn{ padding:3px 8px; font-size:11.5px; border-radius:6px; border:1px solid var(--line); background:var(--card); }
-  .mini-btn:hover{ border-color:var(--teal); color:var(--teal); }
+  .mini-btn:hover{ border-color:var(--accent); color:var(--accent); }
   .sidebar-foot{ margin-top:16px; padding-top:12px; border-top:1px solid var(--line); }
   .backup-btn{
     display:flex; align-items:center; gap:7px; width:100%;
     padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card);
-    color:var(--teal); font-size:13px; font-weight:500;
+    color:var(--accent); font-size:13px; font-weight:500;
   }
-  .backup-btn:hover{ border-color:var(--teal); background:var(--teal-soft); }
+  .backup-btn:hover{ border-color:var(--accent); background:var(--accent-soft); }
 
   .modal-overlay{
     position:fixed; inset:0; background:rgba(32,38,42,0.45); z-index:50;
@@ -119,11 +157,11 @@
   .day-nav-btn[disabled]{ opacity:0.25; cursor:default; }
   .day-nav-btn[disabled]:hover{ background:none; color:var(--ink-soft); }
   .modal-sub{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin:0 0 14px; }
-  .modal-card h4{ font-family:'IBM Plex Sans Condensed', sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-soft); margin:0 0 8px; }
+  .modal-card h4{ font-family:'Big Shoulders Display', sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-soft); margin:0 0 8px; }
   .modal-hint{ font-size:12px; color:var(--ink-soft); margin:8px 0 6px; }
   .modal-textarea{
     width:100%; min-height:80px; resize:vertical; border:1px solid var(--line); border-radius:7px;
-    padding:8px 9px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink); background:var(--paper);
+    padding:8px 9px; font-family:'Space Mono',monospace; font-size:11px; color:var(--ink); background:var(--paper);
     margin-bottom:8px;
   }
   .provider-option{ display:flex; gap:9px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--line); cursor:pointer; font-size:13.5px; }
@@ -134,19 +172,19 @@
 
   .detail-top{ display:flex; align-items:center; gap:12px; margin:6px 0 14px; }
   .detail-top .day-icon{ width:52px; height:52px; margin:0; flex-shrink:0; }
-  .detail-temp-big{ font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600; color:var(--ink); }
+  .detail-temp-big{ font-family:'Space Mono',monospace; font-size:22px; font-weight:600; color:var(--ink); }
   .detail-temp-big .t-min{ font-weight:400; font-size:16px; }
   .detail-grid{ display:flex; flex-direction:column; }
   .detail-row{ display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid var(--line); font-size:13px; }
   .detail-row:last-child{ border-bottom:none; }
   .detail-label{ color:var(--ink-soft); }
-  .detail-value{ font-family:'IBM Plex Mono',monospace; color:var(--ink); text-align:right; }
+  .detail-value{ font-family:'Space Mono',monospace; color:var(--ink); text-align:right; }
   .hourly-chart{ width:100%; height:auto; display:block; margin-top:4px; }
   .chart-legend{ display:flex; gap:16px; font-size:11px; color:var(--ink-soft); margin-top:4px; }
   .chart-legend span{ display:inline-flex; align-items:center; gap:5px; }
   .legend-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
   .legend-temp{ background:var(--amber); }
-  .legend-precip{ background:var(--teal-soft); border:1px solid var(--teal); }
+  .legend-precip{ background:var(--accent-soft); border:1px solid var(--accent); }
 
   .risk-row{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; margin-bottom:12px; background:var(--danger-soft); border:1px solid var(--danger); }
   .badge-circle{ width:38px; height:38px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--danger); }
@@ -159,21 +197,21 @@
   .t-lbl{ font-size:13.5px; font-weight:500; }
   .t-sub{ font-size:12px; color:var(--ink-soft); margin-top:3px; line-height:1.5; }
   .switch{ width:36px; height:20px; border-radius:20px; flex-shrink:0; position:relative; border:none; padding:0; cursor:pointer; }
-  .switch.on{ background:var(--teal); }
+  .switch.on{ background:var(--accent); }
   .switch.off{ background:var(--line); }
   .switch::after{ content:''; position:absolute; top:2px; width:16px; height:16px; border-radius:50%; background:#fff; }
   .switch.on::after{ right:2px; }
   .switch.off::after{ left:2px; }
 
   .aqi-hero{ display:flex; align-items:center; gap:14px; border-radius:10px; padding:12px 14px; margin-top:8px; }
-  .aqi-hero-good, .aqi-hero-moderate{ background:var(--teal-soft); border:1px solid var(--teal); }
-  .aqi-hero-usg{ background:#F5D9BE; border:1px solid #9A4A00; }
+  .aqi-hero-good, .aqi-hero-moderate{ background:var(--accent-soft); border:1px solid var(--accent); }
+  .aqi-hero-usg{ background:var(--high-soft); border:1px solid var(--high); }
   .aqi-hero-unhealthy{ background:var(--danger-soft); border:1px solid var(--danger); }
-  .aqi-hero-veryunhealthy{ background:#E4D9F0; border:1px solid var(--violet); }
-  .aqi-num{ font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:600; line-height:1; }
+  .aqi-hero-veryunhealthy{ background:var(--violet-soft); border:1px solid var(--violet); }
+  .aqi-num{ font-family:'Space Mono',monospace; font-size:24px; font-weight:600; line-height:1; }
   .aqi-num-lbl{ display:block; font-size:10px; font-weight:400; text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
   .aqi-desc{ font-size:12.5px; line-height:1.5; }
-  .fire-link{ font-size:12px; color:var(--teal); margin-top:8px; display:inline-block; }
+  .fire-link{ font-size:12px; color:var(--accent); margin-top:8px; display:inline-block; }
 
   /* main */
   .main{ padding:20px 20px 60px; }
@@ -184,20 +222,20 @@
   .trip-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
   .trip-header-actions{ flex-shrink:0; padding-top:2px; }
   .trip-name-input{
-    font-family:'IBM Plex Sans Condensed', sans-serif; font-weight:600; font-size:25px;
+    font-family:'Big Shoulders Display', sans-serif; font-weight:600; font-size:25px;
     border:1px solid transparent; background:none; padding:3px 6px; margin:0 0 0 -6px; border-radius:7px; color:var(--ink);
     max-width:100%; width:100%;
   }
   .trip-name-input:hover{ border-color:var(--line); }
-  .trip-name-input:focus{ border-color:var(--teal); background:var(--card); outline:none; }
+  .trip-name-input:focus{ border-color:var(--accent); background:var(--card); outline:none; }
   .trip-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; }
   .trip-header-view{ margin-bottom:18px; }
   .trip-view-title{ font-size:25px; }
 
   .btn{ border-radius:8px; padding:8px 14px; font-size:13.5px; font-weight:500; border:1px solid var(--line); background:var(--card); }
-  .btn:hover{ border-color:var(--teal); color:var(--teal); }
-  .btn-primary{ background:var(--teal); border-color:var(--teal); color:#fff; }
-  .btn-primary:hover{ background:#145258; color:#fff; }
+  .btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .btn-primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn-primary:hover{ background:var(--accent-dark); color:#fff; }
   .btn-danger-outline{ background:none; border:1px solid var(--danger); color:var(--danger); border-radius:8px; padding:7px 12px; font-size:12.5px; font-weight:500; }
   .btn-danger-outline:hover{ background:var(--danger-soft); }
 
@@ -207,14 +245,14 @@
   .stop-row:last-child{ padding-bottom:0; }
   .marker-col{ position:relative; display:flex; justify-content:center; }
   .marker-dot{
-    width:26px; height:26px; border-radius:50%; background:var(--card); border:2px solid var(--teal);
-    color:var(--teal); font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600;
+    width:26px; height:26px; border-radius:50%; background:var(--card); border:2px solid var(--accent);
+    color:var(--accent); font-family:'Space Mono', monospace; font-size:11px; font-weight:600;
     display:flex; align-items:center; justify-content:center; z-index:1;
   }
   .stop-row:not(:last-child) .marker-col::after{
     content:''; position:absolute; top:27px; left:50%; transform:translateX(-50%);
     width:2px; height:calc(100% - 7px);
-    background-image:linear-gradient(var(--teal) 55%, transparent 0%);
+    background-image:linear-gradient(var(--accent) 55%, transparent 0%);
     background-size:2px 9px; background-repeat:repeat-y; opacity:0.5;
   }
 
@@ -236,7 +274,7 @@
   }
   .suggestions button{ display:block; width:100%; text-align:left; padding:8px 10px; border:none; background:none; font-size:13px; color:var(--ink); border-bottom:1px solid var(--line); }
   .suggestions button:last-child{ border-bottom:none; }
-  .suggestions button:hover{ background:var(--teal-soft); }
+  .suggestions button:hover{ background:var(--accent-soft); }
   .sugg-empty{ padding:8px 10px; font-size:12.5px; color:var(--ink-soft); }
 
   .stop-actions{ display:flex; gap:2px; margin-left:auto; }
@@ -244,36 +282,41 @@
   /* weather chips */
   .weather-row{ display:flex; gap:8px; flex-wrap:wrap; }
   .day-chip{
-    width:80px; flex-shrink:0; border:1px solid var(--line); border-radius:8px; padding:8px 4px; text-align:center;
-    background:var(--paper); font-family:inherit; color:inherit; margin:0; appearance:none; -webkit-appearance:none;
+    width:80px; flex-shrink:0; border-radius:9px; padding:8px 4px; text-align:center;
+    background:var(--tile-bg); color:var(--tile-text); font-family:inherit; margin:0;
+    appearance:none; -webkit-appearance:none; border:1px solid transparent; box-shadow:var(--shadow);
+    position:relative; overflow:hidden;
   }
-  .day-chip.is-today{ border-color:var(--amber); background:var(--amber-soft); }
-  .day-chip.is-approx{ border-style:dashed; }
-  .day-chip .day-label{ font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; color:var(--ink-soft); }
+  .day-chip:not(.placeholder)::before{ content:''; position:absolute; left:0; right:0; top:50%; height:3px; background:rgba(128,128,128,.18); pointer-events:none; }
+  .day-chip .day-label{ font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; color:var(--tile-text-soft); }
   .day-icon, .day-icon-spacer{ width:34px; height:34px; margin:4px auto; display:block; }
-  .temps{ font-family:'IBM Plex Mono',monospace; font-size:13px; }
-  .t-max{ font-weight:600; color:var(--ink); }
-  .t-min{ color:var(--ink-soft); }
-  .precip{ margin-top:4px; display:inline-block; font-size:10px; font-family:'IBM Plex Mono',monospace; background:var(--teal-soft); color:var(--teal); border-radius:20px; padding:1px 6px; }
-  .uv-badge{ display:none; font-size:10px; font-family:'IBM Plex Mono',monospace; border-radius:20px; padding:1px 6px; }
-  .uv-badge.uv-low{ background:var(--teal-soft); color:var(--teal); }
-  .uv-badge.uv-mid{ background:var(--amber-soft); color:#7A4300; }
-  .uv-badge.uv-high{ background:#F5D9BE; color:#9A4A00; }
+  .day-chip .temps{ font-family:'Space Mono',monospace; font-size:13px; }
+  .day-chip .t-max{ font-weight:600; color:var(--tile-text); }
+  .day-chip .t-min{ color:var(--tile-text-soft); }
+  .day-chip .desc{ font-size:9.5px; color:var(--tile-text-soft); margin-top:3px; min-height:11px; }
+  .day-chip.is-today{ box-shadow:0 0 0 2px var(--accent), var(--shadow); }
+  .day-chip.is-approx{ border:1px dashed var(--tile-text-soft); }
+  .precip{ margin-top:4px; display:inline-block; font-size:10px; font-family:'Space Mono',monospace; background:var(--accent-soft); color:var(--accent); border-radius:20px; padding:1px 6px; }
+  .uv-badge{ display:none; font-size:10px; font-family:'Space Mono',monospace; border-radius:20px; padding:1px 6px; }
+  .uv-badge.uv-low{ background:var(--accent-soft); color:var(--accent); }
+  .uv-badge.uv-mid{ background:var(--amber-soft); color:var(--amber-ink); }
+  .uv-badge.uv-high{ background:var(--high-soft); color:var(--high); }
   .uv-badge.uv-vhigh{ background:var(--danger-soft); color:var(--danger); }
-  .uv-badge.uv-extreme{ background:#E4D9F0; color:var(--violet); }
-  .aqi-badge{ display:none; font-size:10px; font-family:'IBM Plex Mono',monospace; border-radius:20px; padding:1px 6px; }
-  .aqi-badge.aqi-good{ background:var(--teal-soft); color:var(--teal); }
-  .aqi-badge.aqi-moderate{ background:var(--amber-soft); color:#7A4300; }
-  .aqi-badge.aqi-usg{ background:#F5D9BE; color:#9A4A00; }
+  .uv-badge.uv-extreme{ background:var(--violet-soft); color:var(--violet); }
+  .aqi-badge{ display:none; font-size:10px; font-family:'Space Mono',monospace; border-radius:20px; padding:1px 6px; }
+  .aqi-badge.aqi-good{ background:var(--accent-soft); color:var(--accent); }
+  .aqi-badge.aqi-moderate{ background:var(--amber-soft); color:var(--amber-ink); }
+  .aqi-badge.aqi-usg{ background:var(--high-soft); color:var(--high); }
   .aqi-badge.aqi-unhealthy{ background:var(--danger-soft); color:var(--danger); }
-  .aqi-badge.aqi-veryunhealthy{ background:#E4D9F0; color:var(--violet); }
+  .aqi-badge.aqi-veryunhealthy{ background:var(--violet-soft); color:var(--violet); }
   .desc{ font-size:9.5px; color:var(--ink-soft); margin-top:3px; min-height:11px; }
-  .day-chip.placeholder{ opacity:0.75; }
-  .day-chip.placeholder .desc{ font-size:10.5px; }
+  .day-chip.placeholder{ background:transparent; color:var(--ink-soft); border:1px dashed var(--line); box-shadow:none; }
+  .day-chip.placeholder .day-label{ color:var(--ink-soft); }
+  .day-chip.placeholder .desc{ color:var(--ink-soft); font-size:10.5px; }
   .weather-status{ font-size:12.5px; color:var(--ink-soft); padding:4px 2px; }
 
   button.day-chip{ cursor:pointer; }
-  button.day-chip:hover, button.day-chip:focus-visible{ border-color:var(--teal); box-shadow:var(--shadow); }
+  button.day-chip:hover, button.day-chip:focus-visible{ box-shadow:0 0 0 2px var(--accent), var(--shadow); }
 
   /* On phones, a row of small square tiles gets cramped — lay days out as
      full-width horizontal bars instead. Desktop keeps the tile-row layout. */
@@ -282,6 +325,7 @@
     .day-chip{
       width:100%; display:flex; align-items:center; text-align:left; gap:10px; padding:8px 12px;
     }
+    .day-chip::before{ display:none; }
     .day-chip .day-label{ width:58px; flex-shrink:0; order:1; }
     .day-chip .day-icon, .day-chip .day-icon-spacer{ margin:0; flex-shrink:0; order:2; }
     .day-chip .desc{
@@ -300,18 +344,18 @@
   .edit-actions-row{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:8px; margin-left:44px; }
   .add-stop-btn{
     display:inline-flex; align-items:center; gap:6px;
-    padding:8px 12px; border-radius:8px; border:1px dashed var(--line); background:none; color:var(--teal); font-size:13px;
+    padding:8px 12px; border-radius:8px; border:1px dashed var(--line); background:none; color:var(--accent); font-size:13px;
   }
-  .add-stop-btn:hover{ border-color:var(--teal); background:var(--teal-soft); }
+  .add-stop-btn:hover{ border-color:var(--accent); background:var(--accent-soft); }
 
   .warn{ font-size:11.5px; color:var(--danger); margin:-6px 0 10px; }
 
   .save-error-banner{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
-    background:var(--amber-soft); color:#7A4300; border:1px solid var(--amber);
+    background:var(--amber-soft); color:var(--amber-ink); border:1px solid var(--amber);
     border-radius:8px; padding:9px 12px; font-size:12.5px; margin:0 20px 14px;
   }
-  .save-error-banner button{ background:none; border:none; color:#7A4300; font-size:16px; line-height:1; padding:0 2px; flex-shrink:0; }
+  .save-error-banner button{ background:none; border:none; color:var(--amber-ink); font-size:16px; line-height:1; padding:0 2px; flex-shrink:0; }
   @media (min-width:880px){ .save-error-banner{ margin:14px 20px 0; grid-column:1/-1; } }
 
   ::selection{ background:var(--amber-soft); }
@@ -321,13 +365,13 @@
 <div class="topbar">
   <div class="topbar-brand">
     <svg class="brand-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20" cy="20" r="20" fill="#186A72"/>
+      <circle cx="20" cy="20" r="20" fill="var(--accent)"/>
       <g fill="#ffffff" fill-rule="evenodd">
         <rect x="29" y="5" width="2.4" height="5.5" rx="1.2" transform="rotate(20 30.2 7.75)"/>
         <rect x="33.5" y="9" width="2.4" height="5.5" rx="1.2" transform="rotate(70 34.7 11.75)"/>
         <rect x="24.5" y="2" width="2.4" height="5.5" rx="1.2" transform="rotate(-25 25.7 4.75)"/>
         <path d="M20 8c-5.2 0-9.4 4.1-9.4 9.3c0 6.8 9.4 15.7 9.4 15.7s9.4-8.9 9.4-15.7C29.4 12.1 25.2 8 20 8Z"/>
-        <circle cx="20" cy="17.3" r="3.6" fill="#186A72"/>
+        <circle cx="20" cy="17.3" r="3.6" fill="var(--accent)"/>
       </g>
     </svg>
     <div class="brand">
@@ -335,9 +379,14 @@
       <p>Het weer voor je hele route, in één overzicht.</p>
     </div>
   </div>
-  <button type="button" class="icon-btn settings-btn" onclick="App.openSettings()" title="Instellingen" aria-label="Instellingen">
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 13a7.4 7.4 0 0 0 .1-2l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-1.7-1L15 3h-6l-.4 2.9a7.7 7.7 0 0 0-1.7 1l-2.5-1-2 3.5L4.5 11a7.4 7.4 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.8 1.7 1L9 21h6l.4-2.9c.6-.2 1.2-.6 1.7-1l2.5 1 2-3.5L19.4 13Z" stroke-linejoin="round"/></svg>
-  </button>
+  <div class="topbar-actions">
+    <button type="button" id="theme-toggle-btn" class="icon-btn settings-btn" onclick="App.cycleTheme()" title="Weergave" aria-label="Weergave">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <button type="button" class="icon-btn settings-btn" onclick="App.openSettings()" title="Instellingen" aria-label="Instellingen">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 13a7.4 7.4 0 0 0 .1-2l2.1-1.6-2-3.5-2.5 1a7.7 7.7 0 0 0-1.7-1L15 3h-6l-.4 2.9a7.7 7.7 0 0 0-1.7 1l-2.5-1-2 3.5L4.5 11a7.4 7.4 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.8 1.7 1L9 21h6l.4-2.9c.6-.2 1.2-.6 1.7-1l2.5 1 2-3.5L19.4 13Z" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
 </div>
 <div class="layout" id="layout"></div>
 <div id="modal-host"></div>
@@ -472,8 +521,8 @@ const WEATHER_STYLE = {
   partly: { color:'var(--amber)',   glyph:'<circle cx="14" cy="13" r="4"/><rect x="12.7" y="4.5" width="2.6" height="4" rx="1.3"/><rect x="4.5" y="11.7" width="4" height="2.6" rx="1.3"/><rect x="7.6" y="7.6" width="2.6" height="4" rx="1.3" transform="rotate(-45 8.9 9.6)"/>'+CLOUD_BASE },
   cloud:  { color:'var(--slate)',   glyph:CLOUD_BASE },
   fog:    { color:'var(--slate)',   glyph:'<rect x="9" y="13" width="14" height="2.6" rx="1.3"/><rect x="9" y="18.4" width="22" height="2.6" rx="1.3"/><rect x="9" y="23.8" width="17" height="2.6" rx="1.3"/><rect x="9" y="29.2" width="22" height="2.6" rx="1.3"/>' },
-  drizzle:{ color:'var(--teal)',    glyph:CLOUD_HIGH+'<ellipse cx="15" cy="32" rx="1.5" ry="2.6"/><ellipse cx="20" cy="34" rx="1.5" ry="2.6"/><ellipse cx="25" cy="32" rx="1.5" ry="2.6"/>' },
-  rain:   { color:'var(--teal)',    glyph:CLOUD_HIGH+'<ellipse cx="14" cy="33" rx="1.7" ry="3.4"/><ellipse cx="20" cy="35.5" rx="1.7" ry="3.4"/><ellipse cx="26" cy="33" rx="1.7" ry="3.4"/>' },
+  drizzle:{ color:'var(--accent)',    glyph:CLOUD_HIGH+'<ellipse cx="15" cy="32" rx="1.5" ry="2.6"/><ellipse cx="20" cy="34" rx="1.5" ry="2.6"/><ellipse cx="25" cy="32" rx="1.5" ry="2.6"/>' },
+  rain:   { color:'var(--accent)',    glyph:CLOUD_HIGH+'<ellipse cx="14" cy="33" rx="1.7" ry="3.4"/><ellipse cx="20" cy="35.5" rx="1.7" ry="3.4"/><ellipse cx="26" cy="33" rx="1.7" ry="3.4"/>' },
   snow:   { color:'var(--iceblue)', glyph:CLOUD_HIGH+'<circle cx="14" cy="32.5" r="2"/><circle cx="20" cy="34.5" r="2"/><circle cx="26" cy="32.5" r="2"/>' },
   storm:  { color:'var(--violet)',  glyph:CLOUD_HIGH+'<path d="M22 20.5l-9.5 11h5.7l-1.7 7.5L26 27h-6.2l2.2-6.5Z"/>' }
 };
@@ -500,7 +549,7 @@ let state = {
   showBackupPanel: false,
   importFeedback: null,
   showSettingsPanel: false,
-  settings: { provider: 'openmeteo', vcKey: '', airQuality: true, showFirms: false, firmsKey: '', inAppWarning: true },
+  settings: { provider: 'openmeteo', vcKey: '', airQuality: true, showFirms: false, firmsKey: '', inAppWarning: true, theme: 'auto' },
   dayDetail: null // {stopId, date} when a day tile's detail view is open
 };
 const SETTINGS_KEY = 'reisweer-settings';
@@ -526,6 +575,7 @@ function loadSettings(){
         if(typeof parsed.showFirms==='boolean') state.settings.showFirms = parsed.showFirms;
         if(typeof parsed.firmsKey==='string') state.settings.firmsKey = parsed.firmsKey;
         if(typeof parsed.inAppWarning==='boolean') state.settings.inAppWarning = parsed.inAppWarning;
+        if(parsed.theme==='auto' || parsed.theme==='light' || parsed.theme==='dark') state.settings.theme = parsed.theme;
       }
     }
   }catch(e){ /* keep defaults */ }
@@ -900,7 +950,7 @@ function buildHourlyChartSvg(hours){
   const grid = gridY.map((y,i)=>
     '<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(padL+plotW).toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="var(--line)" stroke-width="1"/>'
     +'<text x="'+(padL-5)+'" y="'+(y+3).toFixed(1)+'" font-size="8.5" text-anchor="end" fill="var(--amber)">'+Math.round(tempTicks[i])+'°</text>'
-    +'<text x="'+(padL+plotW+5)+'" y="'+(y+3).toFixed(1)+'" font-size="8.5" text-anchor="start" fill="var(--teal)">'+precipTicks[i]+'%</text>'
+    +'<text x="'+(padL+plotW+5)+'" y="'+(y+3).toFixed(1)+'" font-size="8.5" text-anchor="start" fill="var(--accent)">'+precipTicks[i]+'%</text>'
   ).join('');
 
   const barW = Math.max(3, (plotW/n)*0.55);
@@ -909,13 +959,13 @@ function buildHourlyChartSvg(hours){
     const y = yForPrecip(h.precip);
     const x = xFor(i)-barW/2;
     const bh = (padT+plotH) - y;
-    return '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="1.5" fill="var(--teal-soft)"/>';
+    return '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="1.5" fill="var(--accent-soft)"/>';
   }).join('');
   const linePts = hours.map((h,i)=> typeof h.temp==='number' ? xFor(i).toFixed(1)+','+yForTemp(h.temp).toFixed(1) : null).filter(Boolean);
   const path = linePts.length ? 'M'+linePts.join(' L') : '';
   const dots = hours.map((h,i)=> typeof h.temp==='number' ? '<circle cx="'+xFor(i).toFixed(1)+'" cy="'+yForTemp(h.temp).toFixed(1)+'" r="2.2" fill="var(--amber)"/>' : '').join('');
   const xLabels = hours.map((h,i)=> (i%3===0) ? '<text x="'+xFor(i).toFixed(1)+'" y="'+(H-6)+'" font-size="8" text-anchor="middle" fill="var(--ink-soft)">'+h.h+'</text>' : '').join('');
-  return '<svg viewBox="0 0 '+W+' '+H+'" class="hourly-chart" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">'
+  return '<svg viewBox="0 0 '+W+' '+H+'" class="hourly-chart" xmlns="http://www.w3.org/2000/svg" font-family="Space Mono, monospace">'
     +grid+bars+'<path d="'+path+'" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+dots+xLabels+'</svg>';
 }
 
@@ -1074,6 +1124,19 @@ App.toggleInAppWarning = function(){
   state.settings.inAppWarning = !state.settings.inAppWarning;
   saveSettingsState();
   render();
+};
+
+App.setTheme = function(value){
+  if(value!=='auto' && value!=='light' && value!=='dark') return;
+  state.settings.theme = value;
+  saveSettingsState();
+  applyTheme();
+  render();
+};
+App.cycleTheme = function(){
+  const order = ['auto','light','dark'];
+  const idx = order.indexOf(state.settings.theme);
+  App.setTheme(order[(idx+1) % order.length]);
 };
 
 App.openDayDetail = function(stopId, date){
@@ -1441,6 +1504,31 @@ function renderBackupModal(){
   +'</div>';
 }
 
+function themeIconSvg(theme){
+  if(theme==='light'){
+    return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M2.5 12h3M18.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke-linecap="round"/></svg>';
+  }
+  if(theme==='dark'){
+    return '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20 14.5A9 9 0 0 1 9.5 4 9.6 9.6 0 0 0 4 12.5 9.5 9.5 0 0 0 13.5 22 9.6 9.6 0 0 0 20 14.5Z"/></svg>';
+  }
+  return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg>';
+}
+function themeLabel(theme){
+  if(theme==='light') return 'Licht';
+  if(theme==='dark') return 'Donker';
+  return 'Automatisch';
+}
+function updateThemeToggleButton(){
+  const btn = document.getElementById('theme-toggle-btn');
+  if(!btn) return;
+  const theme = state.settings.theme;
+  const next = theme==='auto' ? 'light' : (theme==='light' ? 'dark' : 'auto');
+  btn.innerHTML = themeIconSvg(theme);
+  const lbl = 'Weergave: '+themeLabel(theme)+' — klik voor '+themeLabel(next).toLowerCase();
+  btn.setAttribute('title', lbl);
+  btn.setAttribute('aria-label', lbl);
+}
+
 function renderToggleRow(label, sub, on, onclickExpr){
   return '<div class="toggle-row"><div><div class="t-lbl">'+label+'</div><div class="t-sub">'+sub+'</div></div>'
     +'<button type="button" class="switch '+(on?'on':'off')+'" onclick="'+onclickExpr+'" aria-label="'+escAttr(label)+'"></button></div>';
@@ -1453,9 +1541,9 @@ function renderSettingsModal(){
     '<div style="margin-top:10px;">'
       +'<label style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);display:block;margin-bottom:4px;">Visual Crossing API-sleutel</label>'
       +'<input type="text" id="vc-key-input" value="'+escAttr(s.vcKey||'')+'" placeholder="Plak hier je gratis API-sleutel" '
-        +'oninput="App.setVcKey(this.value)" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:13px;font-family:\'IBM Plex Mono\',monospace;background:var(--paper);color:var(--ink);" />'
+        +'oninput="App.setVcKey(this.value)" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:13px;font-family:\'Space Mono\',monospace;background:var(--paper);color:var(--ink);" />'
       +'<p class="modal-hint">Nodig om verder dan ~15 dagen vooruit te kunnen kijken. Gratis account: 1000 opvragingen/dag. '
-        +'<a href="https://www.visualcrossing.com/sign-up" target="_blank" rel="noopener" style="color:var(--teal);">Sleutel aanmaken ↗</a><br>'
+        +'<a href="https://www.visualcrossing.com/sign-up" target="_blank" rel="noopener" style="color:var(--accent);">Sleutel aanmaken ↗</a><br>'
         +'Je sleutel wordt alleen lokaal in je browser bewaard en rechtstreeks naar Visual Crossing gestuurd — nergens anders naartoe.</p>'
     +'</div>'
   ) : '';
@@ -1463,8 +1551,8 @@ function renderSettingsModal(){
     '<div style="margin-top:10px;">'
       +'<label style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);display:block;margin-bottom:4px;">NASA FIRMS MAP_KEY</label>'
       +'<input type="text" id="firms-key-input" value="'+escAttr(s.firmsKey||'')+'" placeholder="Plak hier je gratis NASA-sleutel" '
-        +'oninput="App.setFirmsKey(this.value)" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:13px;font-family:\'IBM Plex Mono\',monospace;background:var(--paper);color:var(--ink);" />'
-      +'<p class="modal-hint">Gratis aan te vragen bij NASA. <a href="https://firms.modaps.eosdis.nasa.gov/api/map_key/" target="_blank" rel="noopener" style="color:var(--teal);">Sleutel aanvragen ↗</a><br>'
+        +'oninput="App.setFirmsKey(this.value)" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:13px;font-family:\'Space Mono\',monospace;background:var(--paper);color:var(--ink);" />'
+      +'<p class="modal-hint">Gratis aan te vragen bij NASA. <a href="https://firms.modaps.eosdis.nasa.gov/api/map_key/" target="_blank" rel="noopener" style="color:var(--accent);">Sleutel aanvragen ↗</a><br>'
         +'Je sleutel wordt alleen lokaal bewaard en rechtstreeks naar NASA gestuurd. Werkt dit niet vanuit je browser, dan zie je dat als duidelijke foutmelding bij de stop.</p>'
     +'</div>'
   ) : '';
@@ -1474,7 +1562,14 @@ function renderSettingsModal(){
         +'<button type="button" class="icon-btn" onclick="App.closeSettings()" aria-label="Sluiten">'
           +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg></button>'
       +'</div>'
-      +'<h4>Weerdienst</h4>'
+      +'<h4>Weergave</h4>'
+      +'<label class="provider-option"><input type="radio" name="theme" '+(s.theme==='auto'?'checked':'')+' onchange="App.setTheme(\'auto\')" />'
+        +'<span><strong>Automatisch</strong> <span class="modal-hint" style="margin:2px 0 0;display:block;">Volgt de instelling van je toestel of browser.</span></span></label>'
+      +'<label class="provider-option"><input type="radio" name="theme" '+(s.theme==='light'?'checked':'')+' onchange="App.setTheme(\'light\')" />'
+        +'<span><strong>Licht</strong> <span class="modal-hint" style="margin:2px 0 0;display:block;">Altijd het lichte thema, ongeacht je toestel.</span></span></label>'
+      +'<label class="provider-option"><input type="radio" name="theme" '+(s.theme==='dark'?'checked':'')+' onchange="App.setTheme(\'dark\')" />'
+        +'<span><strong>Donker</strong> <span class="modal-hint" style="margin:2px 0 0;display:block;">Altijd het donkere thema, ongeacht je toestel.</span></span></label>'
+      +'<h4 style="margin-top:18px;">Weerdienst</h4>'
       +'<label class="provider-option"><input type="radio" name="provider" '+(s.provider==='openmeteo'?'checked':'')+' onchange="App.setProvider(\'openmeteo\')" />'
         +'<span><strong>Open-Meteo</strong> <span class="modal-hint" style="margin:2px 0 0;display:block;">Gratis, geen sleutel nodig. Betrouwbare voorspelling tot ~16 dagen vooruit.</span></span></label>'
       +'<label class="provider-option"><input type="radio" name="provider" '+(s.provider==='visualcrossing'?'checked':'')+' onchange="App.setProvider(\'visualcrossing\')" />'
@@ -1500,8 +1595,8 @@ function renderSettingsModal(){
         +'</div>'
       ) : '')
       +'<h4 style="margin-top:18px;">Over deze app</h4>'
-      +'<p class="modal-hint" style="margin-top:0;">Broncode op <a href="https://github.com/bjornvaessen/reisweer" target="_blank" rel="noopener" style="color:var(--teal);">github.com/bjornvaessen/reisweer</a>.<br>'
-        +'Open source onder de <a href="https://github.com/bjornvaessen/reisweer/blob/main/LICENSE" target="_blank" rel="noopener" style="color:var(--teal);">GNU GPLv3-licentie</a>.</p>'
+      +'<p class="modal-hint" style="margin-top:0;">Broncode op <a href="https://github.com/bjornvaessen/reisweer" target="_blank" rel="noopener" style="color:var(--accent);">github.com/bjornvaessen/reisweer</a>.<br>'
+        +'Open source onder de <a href="https://github.com/bjornvaessen/reisweer/blob/main/LICENSE" target="_blank" rel="noopener" style="color:var(--accent);">GNU GPLv3-licentie</a>.</p>'
     +'</div>'
   +'</div>';
 }
@@ -1640,7 +1735,28 @@ function render(){
   if(trip){ trip.stops.forEach(s=>{ ensureWeather(s); ensureAirQuality(s); ensureFirms(s); }); }
 }
 
+function effectiveThemeIsDark(){
+  if(state.settings.theme==='dark') return true;
+  if(state.settings.theme==='light') return false;
+  return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+}
+function applyTheme(){
+  const root = document.documentElement;
+  if(state.settings.theme==='auto'){ root.removeAttribute('data-theme'); }
+  else{ root.setAttribute('data-theme', state.settings.theme); }
+  const meta = document.getElementById('theme-color-meta');
+  if(meta) meta.setAttribute('content', effectiveThemeIsDark() ? '#14171F' : '#F5F0E3');
+  updateThemeToggleButton();
+}
+if(window.matchMedia){
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  const onSystemThemeChange = function(){ if(state.settings.theme==='auto') applyTheme(); };
+  if(mq.addEventListener) mq.addEventListener('change', onSystemThemeChange);
+  else if(mq.addListener) mq.addListener(onSystemThemeChange);
+}
+
 loadSettings();
+applyTheme();
 loadTrips();
 </script>
 </body>
