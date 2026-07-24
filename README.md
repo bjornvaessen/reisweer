@@ -27,6 +27,9 @@ bijbehorende data, en het weer voor precies die dagen waarop je er bent.
 - **Luchtkwaliteit en brandhaarden** (via Instellingen):
   - Luchtkwaliteit via [Open-Meteo](https://open-meteo.com): 7 dagen vooruit
   - Actuele brandhaarden binnen een straal van 60 kilometer via [NASA FIRMS](https://firms.modaps.eosdis.nasa.gov/): eigen gratis sleutel nodig. Deze wordt alleen lokaal in je browser bewaard.
+  - Een waarschuwing bovenin de app als een stop in je reis verhoogd risico heeft
+- **Licht, donker, of automatisch**: volgt standaard de instelling van je toestel, met een
+  los icoontje naast Instellingen om snel te wisselen
 - **Bekijk- en bewerkmodus**: een opgeruimd overzicht om te bekijken, een aparte bewerkmodus
   (potlood-icoon) om een reisplan aan te passen
 - **Bewaren & laden**: reisplannen als bestand downloaden of als tekst kopiëren, zodat je ze
